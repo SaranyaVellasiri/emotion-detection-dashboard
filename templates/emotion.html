@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Emotion Detection Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    body {
+      background-color: #1e1e2f;
+      color: #ffffff;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+      color: #00d1b2;
+    }
+
+    .btn-custom {
+      width: 150px;
+      margin: 10px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .btn-start {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .btn-start:hover {
+      background-color: #218838;
+    }
+
+    .btn-stop {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .btn-stop:hover {
+      background-color: #c82333;
+    }
+
+    .fade-video {
+      transition: opacity 0.6s ease;
+      opacity: 1;
+    }
+
+    .fade-video.hidden {
+      opacity: 0;
+    }
+
+    .tab-content {
+      padding-top: 20px;
+    }
+
+    .video-controls {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <h1>Emotion Detection Dashboard</h1>
+
+    <ul class="nav nav-tabs justify-content-center mt-4" id="emotionTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="video-tab" data-bs-toggle="tab" data-bs-target="#video" type="button" role="tab">Real-Time Emotion Detection</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="graph-tab" data-bs-toggle="tab" data-bs-target="#graph" type="button" role="tab">Emotion Duration Graph</button>
+      </li>
+    </ul>
+
+    <div class="tab-content mt-3">
+      <!-- Real-Time Video Tab -->
+      <div class="tab-pane fade show active text-center" id="video" role="tabpanel">
+        <div class="video-controls">
+          <button class="btn btn-custom btn-start" onclick="startCamera()">Start Camera</button>
+          <button class="btn btn-custom btn-stop" onclick="stopCamera()">Stop Camera</button>
+        </div>
+        <img id="videoFeed" src="" class="img-fluid rounded border fade-video" style="max-width: 90%;" />
+      </div>
+
+      <!-- Emotion Graph Tab -->
+      <div class="tab-pane fade text-center" id="graph" role="tabpanel">
+        <img id="emotionGraph" class="img-fluid rounded border" style="max-width: 90%;" alt="Emotion Duration Graph">
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const videoFeed = document.getElementById('videoFeed');
+    const graphTab = document.getElementById('graph-tab');
+    const emotionGraph = document.getElementById('emotionGraph');
+
+    graphTab.addEventListener('shown.bs.tab', () => {
+      fetch('/get_graph')
+        .then(res => res.text())
+        .then(data => {
+          emotionGraph.src = data;
+        });
+    });
+
+    function startCamera() {
+      videoFeed.src = "/video_feed";
+      videoFeed.classList.remove("hidden");
+    }
+
+    function stopCamera() {
+      fetch('/stop_video', { method: 'POST' })
+        .then(res => {
+          if (res.ok) {
+            videoFeed.classList.add("hidden");
+            videoFeed.src = "";
+          }
+        })
+        .catch(err => console.error("Error stopping camera:", err));
+    }
+  </script>
+</body>
+</html>

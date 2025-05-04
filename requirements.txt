@@ -1,0 +1,6 @@
+lask
+opencv-python
+numpy
+tensorflow
+matplotlib
+Pillow
