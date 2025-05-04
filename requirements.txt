@@ -1,6 +1,6 @@
-lask
-opencv-python
-numpy
-tensorflow
-matplotlib
-Pillow
+flask==2.2.5
+opencv-python==4.9.0.80
+numpy==1.23.5
+tensorflow==2.12.0
+matplotlib==3.7.1
+Pillow==9.5.0
